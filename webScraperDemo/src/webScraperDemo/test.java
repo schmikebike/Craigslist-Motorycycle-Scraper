@@ -1,7 +1,17 @@
 package webScraperDemo;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import com.jaunt.Element;
 import com.jaunt.Elements;
@@ -9,12 +19,38 @@ import com.jaunt.JauntException;
 import com.jaunt.UserAgent;
 
 public class test {
-	static ArrayList array = new ArrayList<Motorcycle>();
 	
+	
+	
+	
+	
+	
+	static ArrayList array = new ArrayList<Motorcycle>();
 	static ArrayList motorcycleName= new ArrayList<String>();
 	static ArrayList motorcyclePrice= new ArrayList<String>();
+	 static ArrayList <Motorcycle> mList = new ArrayList<>();
+	 
+	 
+		 
+	 
 	
-	public static void main (String[] args) {
+	public static void main (String[] args) throws IOException, InterruptedException {
+		
+		//while (1==1) {
+		
+		String content = null;
+		URLConnection connection = null;
+		try {
+		  connection =  new URL("https://denver.craigslist.org/d/motorcycles-scooters/search/mca?postal=80222&search_distance=20.3").openConnection();
+		  Scanner scanner = new Scanner(connection.getInputStream());
+		  scanner.useDelimiter("\\Z");
+		  content = scanner.next();
+		}catch ( Exception ex ) {
+		    ex.printStackTrace();
+		}
+		System.out.println(content);
+		
+		
 		Integer [] years = new Integer [100];
 		int startYear=1950;
 		for (int i=0; i<years.length; i++) {
@@ -22,19 +58,14 @@ public class test {
 			startYear++;
 		}
 		
-	try{
-		String borderString = "https://denver.craigslist.org/mcy/d/";
-		  UserAgent userAgent = new UserAgent();                       //create new userAgent (headless browser).
-		  userAgent.visit("https://denver.craigslist.org/d/motorcycles-scooters/search/mca");                        //visit a url  
-		  
-		  System.out.println(userAgent.doc.innerHTML());
+	
+
 		  
 		  ArrayList<String> motorcycles = new ArrayList<>();
 		  
-		  Scanner nameInput = new Scanner (userAgent.doc.innerHTML()); //scanner for motorcycle names
-		  Scanner priceInput= new Scanner (userAgent.doc.innerHTML());
-		  UserAgent userAg = new UserAgent();
-		  userAg.visit("https://denver.craigslist.org/d/motorcycles-scooters/search/mca");   
+		  Scanner nameInput = new Scanner (content); //scanner for motorcycle names
+		  Scanner priceInput= new Scanner (content);
+
 		 String price ="";
 		 String x="";
 		 String name ="";
@@ -50,7 +81,7 @@ public class test {
 				  
 		  }
 			  }
-		  System.out.println(motorcycleName.toString());
+		  //System.out.println(motorcycleName.toString());
 		  
 		  //creates arraylist of motorcycle prices
 		  while (priceInput.hasNext()) {
@@ -63,8 +94,16 @@ public class test {
 				  motorcyclePrice.add(price);
 		  }
 		  }
-		  System.out.println(motorcyclePrice.toString());
-	}
+		  //System.out.println(motorcyclePrice.toString());
+		  
+		  for (int i=0; i<motorcycleName.size();i++) {
+			  
+			  Motorcycle qwery = new Motorcycle ((String)motorcycleName.get(i),(String) motorcyclePrice.get(i));
+			  mList.add(qwery);
+			  
+		  }
+		  System.out.println(mList.toString());
+	
 			  
 			 
 			  
@@ -133,12 +172,50 @@ public class test {
 //		  }
 //	}
 	
-		catch(JauntException e){         //if an HTTP/connection error occurs, handle JauntException.
-		  System.err.println(e);
-		}
+		
+		try {
+			
+			//FileWriter fw = new FileWriter ("/Users/Mike/Documents/testFile.txt");
+//			FileWriter write = new FileWriter("/Users/Mike/Documents/testFile.txt", true);
+			
+			FileWriter write = new FileWriter ("/Users/Mike/Desktop/craigslistApp/testFile.txt");
+//			for (int i=0; i<mList.size(); i++) {
+//				write.println(mList.get(i));
+//			}
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			   LocalDateTime now = LocalDateTime.now();  
+			   write.append('\n');
+				write.append('\n');
+				write.append('\n');
+				write.append('\n');
+			write.append(dtf.format(now)); 
+			write.append('\n');
+			write.append('\n');
+			
+			
+			write.append(mList.toString());
+			write.close();
+			
+			}
+			
+			catch (FileNotFoundException e){
+//				File file = new File ("/Users/Mike/Documents/testFile.txt");
+				File file = new File ("/Users/Mike/Desktop/craigslistApp/testFile.txt");
+			}
+		TimeUnit.SECONDS.sleep(1);
+		
+	}
+	}
+//}
+	
+	
+//}
+	
+
+	
+
 	
 
 
-}
-}
+	
 	

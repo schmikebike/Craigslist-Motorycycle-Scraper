@@ -19,12 +19,13 @@ public class Motorcycle {
 		
 	}
 	public Motorcycle (String name, String price) {
-		this.make = make;
-		this.priceString = price;
+		this.make = name;
+		this.priceString = price.replace("$", "");
+		this.priceString = priceString.replaceAll(" ", "");
 		
 	}
 	
 	public String toString() {
-		return ("Make: "+make+ "Model: " + model +"Year :"+ year+ "Mileage: "+ mileage + "Price: "+ priceString);
+		return (make+'\n'+priceString+'\n');
 	}
 }
